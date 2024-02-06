@@ -1,5 +1,6 @@
 package com.example.todolist.service;
 
+import com.example.todolist.dto.UserDTO;
 import com.example.todolist.model.User;
 import com.example.todolist.repository.UserRepository;
 import com.example.todolist.repository.UserRepository;
@@ -18,12 +19,14 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User registerUser(User newUser) {
-        Optional<User> existingUser = userRepository.findByUsername(newUser.getUsername());
+    public User registerUser(UserDTO userDTO) {
+        Optional<User> existingUser = userRepository.findByUsername(userDTO.getUsername());
         if (existingUser.isPresent()) {
             throw new RuntimeException("User already exists");
         }
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        User newUser = new User();
+        newUser.setUsername(userDTO.getUsername());
+        newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         return userRepository.save(newUser);
     }
 }
